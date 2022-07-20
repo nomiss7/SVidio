@@ -1,6 +1,18 @@
 from django.db import models
 
 
+class Tag(models.Model):
+    name = models.CharField(verbose_name='Название', max_length=255)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'Тег'
+        verbose_name_plural = 'Теги'
+
+
+
 class BlogCategory(models.Model):
     name = models.CharField(verbose_name='Название', max_length=255)
 
@@ -25,7 +37,7 @@ class Article(models.Model):
     text = models.TextField(verbose_name='Текст')
     created_at = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name='Дата редактирования', auto_now=True)
-
+    Tags = models.ManyToManyField(Tag)
 
     def __str__(self):
         return self.title
@@ -34,3 +46,5 @@ class Article(models.Model):
     class Meta:
         verbose_name = 'Статья'
         verbose_name_plural = 'Статьи'
+
+
