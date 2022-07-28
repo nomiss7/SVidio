@@ -18,7 +18,7 @@ def add_blog_articles(apps, schema_editor):
             text_preview=article['text_preview'],
             text=article['text'],
         )
-        Article.objects.create(**article)
+        ##article.objects.create(**article)
 
 
 class Migration(migrations.Migration):
