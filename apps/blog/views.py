@@ -15,6 +15,6 @@ def article_list(request, category_id):
 def article_view(request, category_id, article_id):
     article = Article.objects.get(id=article_id)
     category = BlogCategory.objects.get(id=category_id)
-    return render(request, 'blog/article/view.html', {'articles': article, 'category': category})
+    return render(request, 'blog/article/view.html', {'article': article, 'category': category})
 
 # Create your views here.
