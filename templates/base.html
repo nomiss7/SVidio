@@ -14,20 +14,50 @@
             crossorigin="anonymous"></script>
 </head>
 <body>
+
 <div class="page-header">
     <div class="container">
         <div class="row">
             <div class="col-6">
                 <a href="{% url 'home' %}">
+                    <br>
                     <img src="{% static 'logo.png' %}" alt="SVidio" title="SVidio" id="logo">
                 </a>
             </div>
-            <div class="col-6">
-                <br>
-                <p class="text-danger text-end">Техника на любой вкус</p>
+            <div class=" col-6 text-center">
+                <table width="650px" style="font-size:150%;" >
+                    <tr>
+                        <br>
+                        <br>
+                        <th>График работы:</th>
+                        <th>Контакты:</th>
+                    </tr>
+                    <tr>
+                        <td>Понедельник - Пятница</td>
+                        <td>Номер тел: +380 674 611 311</td>
+                    </tr>
+                    <tr>
+                        <td>9.00 - 22.00</td>
+                        <td>Адресс: Проспект Бажана 7</td>
+                    </tr>
+                </table>
             </div>
+            {#            <div class="col-6">#}
+            {#                <br>#}
+            {#                <p class="text-start height=300px" >График работы: </p>#}
+            {#                <br>#}
+            {#                <p class=" text-start height=300px">Понедельник - Пятница</p>#}
+            {#                <br>#}
+            {#                <p class=" text-start height=300px">9.00 - 22.00</p>#}
+            {#                <p class=" height=300px text-end ">Контакты: </p>#}
+            {#                <br>#}
+            {#                <p class=" text-end height=300px">Номер тел: +380 674 611 311</p>#}
+            {#                <br>#}
+            {#                <p class=" text-end height=300px">Адресс: Днепровская набережная 6</p>#}
+            {#            </div>#}
             <div class="col">
-                <p class="text-center text-info">________________________________________________________________________________________________________</p>
+                <p class="text-center text-info">
+                    _______________________________________________________________________________________________________________________________________________________________________________________________________</p>
             </div>
         </div>
     </div>
