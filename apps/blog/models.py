@@ -12,13 +12,11 @@ class Tag(models.Model):
         verbose_name_plural = 'Теги'
 
 
-
 class BlogCategory(models.Model):
     name = models.CharField(verbose_name='Название', max_length=255)
 
     def __str__(self):
         return self.name
-
 
     class Meta:
         verbose_name = 'Категория блога'
@@ -42,9 +40,6 @@ class Article(models.Model):
     def __str__(self):
         return self.title
 
-
     class Meta:
         verbose_name = 'Статья'
         verbose_name_plural = 'Статьи'
-
-

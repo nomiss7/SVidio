@@ -1,13 +1,17 @@
-<h1>{{ article.title }}</h1>
-<p>{{ article.text }}</p>
-<p>
-    {% for tag in article.tags.all %}
-        <a href="#">{{ tag.name }}</a>
-    {% endfor %}
-</p>
-<hr>
-<p>
-    <b>Дата</b>: {{ article.created_at }} <br>
-    <b>Категория</b>: {{ category.name }} <br>
-</p>
+{% extends 'base.html' %}
+{% block content %}<h1>{{ article.title }}</h1>
+    <p>{{ article.text }}</p>
+    <p>
+        {% for tag in article.tags.all %}
+            <h4>
+                <a href="{% url 'tag_article_list' category_id=category.id article_id=article.id tag_id=tag.id %}">{{ tag.name }}</a>
+            </h4>
+        {% endfor %}
+    </p>
+    <hr>
+    <p>
+        <b>Дата</b>: {{ article.created_at }} <br>
+        <b>Категория</b>: {{ category.name }} <br>
+    </p>
+{% endblock %}
 
