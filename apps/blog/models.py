@@ -57,7 +57,16 @@ class Article(models.Model):
         on_delete=models.SET_NULL,
         null=True
     )
+
+    tags = models.ForeignKey(
+        to=Tag,
+        verbose_name='Тег',
+        on_delete=models.SET_NULL,
+        null=True
+    )
+
     tags = models.ManyToManyField(Tag, verbose_name="Теги", blank=True)
+
     image = ProcessedImageField(
         verbose_name='Изображение',
         upload_to='blog/article/',

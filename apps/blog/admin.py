@@ -4,7 +4,14 @@ from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.http import urlencode
 
-admin.site.register(Tag)
+
+# admin.site.register(Tag)
+
+
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name']
+    list_display_links = ['id', 'name']
 
 
 @admin.register(BlogCategory)
@@ -28,7 +35,7 @@ class BlogCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
-    list_display = ['id', 'title', 'image_tag_thumbnail', 'category_link', 'created_at']
+    list_display = ['id', 'title', 'image_tag_thumbnail', 'category_link', 'tags_link', 'created_at']
     list_display_links = ['id', 'title', 'image_tag_thumbnail']
     fields = ['category', 'image_tag', 'image', 'tags', 'title', 'text_preview', 'text']
     readonly_fields = ['image_tag']
@@ -40,3 +47,12 @@ class ArticleAdmin(admin.ModelAdmin):
             return format_html(f"<a href='{url}'>{obj.category.name}</a>")
 
     category_link.short_description = 'Категория'
+
+    def tags_link(self, obj):
+        result = ""
+        for i in obj.tags.all():
+            url = reverse('admin:blog_tag_change', args=[i.id])
+            result = result + f"<a href='{url}'>{i.name}, </a>"
+        return format_html(result)
+
+    tags_link.short_description = 'Теги'
