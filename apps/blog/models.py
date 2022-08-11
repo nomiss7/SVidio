@@ -2,6 +2,8 @@ from django.db import models
 from django.utils.safestring import mark_safe
 from imagekit.models import ProcessedImageField, ImageSpecField
 from pilkit.processors import ResizeToFill
+
+from apps.user.models import User
 from config.settings import MEDIA_ROOT
 
 
@@ -84,6 +86,22 @@ class Article(models.Model):
     title = models.CharField(verbose_name='Заголовок', max_length=255)
     text_preview = models.TextField(verbose_name='Текст-превью')
     text = models.TextField(verbose_name='Текст')
+    user = models.ForeignKey(
+        to=User,
+        verbose_name='Автор',
+        on_delete=models.SET_NULL,
+        null=True
+    )
+    # user.first_name = models.TextField(verbose_name='Имя Автора')
+    # user.last_name = models.TextField(verbose_name='Фамилия Автора')
+    # user.image = ProcessedImageField(
+    #     verbose_name='Изображение',
+    #     upload_to='blog/article/',
+    #     processors=[],
+    #     format='JPEG',
+    #     options={'quality': 100},
+    #     null=True
+    # )
     created_at = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name='Дата редактирования', auto_now=True)
 

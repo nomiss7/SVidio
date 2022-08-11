@@ -5,6 +5,16 @@
         <img class="img-thumbnail" src="{{ article.image.url }}" alt="">
     {% endif %}
     <p>{{ article.text }}</p>
+    <hr>
+    {% if article.user.first_name %}
+        <p>Имя Автора: {{ article.user.first_name }}</p>
+    {% endif %}
+    {% if article.user.last_name %}
+        <p>Фамилия Автора: {{ article.user.last_name }}</p>
+    {% endif %}
+    {% if article.user.image %}
+        <img class="img-thumbnail" src="{{ article.user.image.url }}" alt="">
+    {% endif %}
     <p>
         {% for tag in article.tags.all %}
             <h4>
