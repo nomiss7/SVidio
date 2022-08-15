@@ -6,12 +6,11 @@
     {% endif %}
     <p>{{ article.text }}</p>
     <hr>
-    {% if article.user.first_name %}
+    {% if article.user %}
         <p>Имя Автора: {{ article.user.first_name }}</p>
-    {% endif %}
-    {% if article.user.last_name %}
         <p>Фамилия Автора: {{ article.user.last_name }}</p>
     {% endif %}
+
     {% if article.user.image %}
         <img class="img-thumbnail" src="{{ article.user.image.url }}" alt="">
     {% endif %}
