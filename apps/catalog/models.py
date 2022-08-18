@@ -59,6 +59,45 @@ class Category(MPTTModel):
         return reverse('category', args=[self.slug])
 
 
+class ProductImage(models.Model):
+    image = ProcessedImageField(
+        verbose_name='Изображение',
+        upload_to='blog/category',
+        processors=[ResizeToFill(600, 400)],
+        format='JPEG',
+        options={'quality': 100},
+        blank=True,
+        null=True
+    )
+    is_main = models.BooleanField(verbose_name='Основное изображение', default=False)
+
+    def image_tag_thumbnail(self):
+        if self.image:
+            return mark_safe(f"<img src='/{MEDIA_ROOT}{self.image}' width='100'>")
+
+    image_tag_thumbnail.short_description = 'Текущее изображение'
+    image_tag_thumbnail.allow_tags = True
+
+    def image_tag(self):
+        if self.image:
+            return mark_safe(f"<img src='/{MEDIA_ROOT}{self.image}'>")
+
+    image_tag.short_description = 'Текущее изображение'
+    image_tag.allow_tags = True
+
+    def __str__(self):
+        return ''
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if self.is_main:
+            ProductImage.objects.filter(image=self.image).update(is_main=False)
+        super(ProductImage, self).save(force_insert, force_update, using, update_fields)
+
+    class Meta:
+        verbose_name = 'Изображение'
+        verbose_name_plural = 'Изображение'
+
+
 class Product(models.Model):
     name = models.CharField(verbose_name='Название', max_length=255)
     description = models.TextField(verbose_name='Описание', blank=True, null=True)
@@ -73,6 +112,13 @@ class Product(models.Model):
         related_name='categories',
         blank=True
     )
+    images = models.ForeignKey(
+        to=ProductImage,
+        verbose_name='Тег',
+        on_delete=models.SET_NULL,
+        null=True
+    )
+    images = models.ManyToManyField(ProductImage, verbose_name="Теги", blank=True)
 
     class Meta:
         ordering = ['-created_at']
