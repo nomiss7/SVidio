@@ -1,6 +1,7 @@
+from django.contrib.admin import display
 from django.db import models
 from django.utils.safestring import mark_safe
-from imagekit.models import ProcessedImageField
+from imagekit.models import ProcessedImageField, ImageSpecField
 from mptt.models import MPTTModel, TreeForeignKey
 from pilkit.processors import ResizeToFill
 from config.settings import MEDIA_ROOT
@@ -59,43 +60,40 @@ class Category(MPTTModel):
         return reverse('category', args=[self.slug])
 
 
-class ProductImage(models.Model):
+class Image(models.Model):
     image = ProcessedImageField(
         verbose_name='Изображение',
-        upload_to='blog/category',
+        upload_to='catalog/product',
+        processors=[],
+        format='JPEG',
+        options={'quality': 100},
+        null=True
+    )
+    image_thumbnail = ImageSpecField(
+        source='image',
         processors=[ResizeToFill(600, 400)],
         format='JPEG',
         options={'quality': 100},
-        blank=True,
-        null=True
     )
+    product = models.ForeignKey(to='Product', verbose_name='Товар', on_delete=models.CASCADE)
     is_main = models.BooleanField(verbose_name='Основное изображение', default=False)
 
+    @display(description='Текущее изображение')
     def image_tag_thumbnail(self):
         if self.image:
-            return mark_safe(f"<img src='/{MEDIA_ROOT}{self.image}' width='100'>")
+            if not self.image_thumbnail:
+                Image.objects.get(id=self.id)
+            return mark_safe(f"<img src='/{MEDIA_ROOT}{self.image_thumbnail}' width='100'>")
 
-    image_tag_thumbnail.short_description = 'Текущее изображение'
-    image_tag_thumbnail.allow_tags = True
-
+    @display(description='Текущее изображение')
     def image_tag(self):
         if self.image:
+            if not self.image_thumbnail:
+                Image.objects.get(id=self.id)
             return mark_safe(f"<img src='/{MEDIA_ROOT}{self.image}'>")
-
-    image_tag.short_description = 'Текущее изображение'
-    image_tag.allow_tags = True
 
     def __str__(self):
         return ''
-
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        if self.is_main:
-            ProductImage.objects.filter(image=self.image).update(is_main=False)
-        super(ProductImage, self).save(force_insert, force_update, using, update_fields)
-
-    class Meta:
-        verbose_name = 'Изображение'
-        verbose_name_plural = 'Изображение'
 
 
 class Product(models.Model):
@@ -112,13 +110,15 @@ class Product(models.Model):
         related_name='categories',
         blank=True
     )
-    images = models.ForeignKey(
-        to=ProductImage,
-        verbose_name='Тег',
-        on_delete=models.SET_NULL,
-        null=True
-    )
-    images = models.ManyToManyField(ProductImage, verbose_name="Теги", blank=True)
+
+    def images(self):
+        return Image.objects.filter(product=self.id)
+
+    def main_image(self):
+        image = Image.objects.filter(is_main=True, product=self.id).first()
+        if image:
+            return image
+        return self.images().first()
 
     class Meta:
         ordering = ['-created_at']
@@ -127,6 +127,9 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('product', kwargs={'pk': self.id})
 
 
 class ProductCategory(models.Model):
