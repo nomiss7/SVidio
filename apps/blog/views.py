@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from apps.blog.models import BlogCategory, Article
+from apps.blog.models import BlogCategory, Article, Tag
 
 
 def blog_category_list(request):
@@ -10,7 +10,8 @@ def blog_category_list(request):
 
 def article_list(request, category_id):
     articles = Article.objects.filter(category=category_id)
-    return render(request, 'blog/article/list.html', {'articles': articles})
+    category = BlogCategory.objects.get(id=category_id)
+    return render(request, 'blog/article/list.html', {'articles': articles, 'category': category})
 
 
 def article_view(request, category_id, article_id):
@@ -21,6 +22,7 @@ def article_view(request, category_id, article_id):
 
 def tag_article_list(request, category_id, article_id, tag_id):
     articles = Article.objects.filter(tags=tag_id)
-    return render(request, 'blog/article/tag_article_list.html', {'articles': articles})
+    tag = Tag.objects.get(id=tag_id)
+    return render(request, 'blog/article/tag_article_list.html', {'articles': articles, 'tag': tag})
 
 # Create your views here.

@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block meta_tags %}
+    {% include '_meta_tags.html' with meta_title=category.get_meta_title meta_description=category.meta_description meta_keywords=category.meta_keywords %}
+{% endblock %}
 {% block content %}
     <h1>Статьи</h1>
     <div class="row">
@@ -11,7 +14,7 @@
                     <a href="{% url 'article_view' article_id=article.id category_id=article.category.id %}"><img class="img-thumbnail" src="{% static 'no-image.png' %}" alt=""></a>
                 {% endif %}
                 <h4>
-                    <a href="{% url 'article_view' article_id=article.id category_id=article.category.id %}">{{ article.title }}</a>
+                    <a href="{% url 'article_view' article_id=article.id category_id=article.category.id %}">{{ article.name }}</a>
                 </h4>
                 <p>{{ article.text_preview }}</p>
                 <hr>
