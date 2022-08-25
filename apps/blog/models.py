@@ -3,11 +3,12 @@ from django.utils.safestring import mark_safe
 from imagekit.models import ProcessedImageField, ImageSpecField
 from pilkit.processors import ResizeToFill
 
+from apps.main.mixins import MetaTagMixin
 from apps.user.models import User
 from config.settings import MEDIA_ROOT
 
 
-class Tag(models.Model):
+class Tag(MetaTagMixin):
     name = models.CharField(verbose_name='Название', max_length=255)
 
     def __str__(self):
@@ -18,7 +19,7 @@ class Tag(models.Model):
         verbose_name_plural = 'Теги'
 
 
-class BlogCategory(models.Model):
+class BlogCategory(MetaTagMixin):
     name = models.CharField(verbose_name='Название', max_length=255)
     # image = models.ImageField(verbose_name='Изображение', upload_to='blog/category', null=True)
     image = ProcessedImageField(
@@ -52,7 +53,7 @@ class BlogCategory(models.Model):
         verbose_name_plural = 'Категории блога'
 
 
-class Article(models.Model):
+class Article(MetaTagMixin):
     category = models.ForeignKey(
         to=BlogCategory,
         verbose_name='Категория',
@@ -83,7 +84,7 @@ class Article(models.Model):
         format='JPEG',
         options={'quality': 100},
     )
-    title = models.CharField(verbose_name='Заголовок', max_length=255)
+    name = models.CharField(verbose_name='Заголовок', max_length=255)
     text_preview = models.TextField(verbose_name='Текст-превью')
     text = models.TextField(verbose_name='Текст')
     user = models.ForeignKey(
@@ -124,7 +125,7 @@ class Article(models.Model):
     image_tag.allow_tags = True
 
     def __str__(self):
-        return self.title
+        return self.name
 
     class Meta:
         verbose_name = 'Статья'
