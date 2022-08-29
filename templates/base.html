@@ -50,6 +50,11 @@
                         <td>Адресс: Проспект Бажана 7</td>
                     </tr>
                 </table>
+                {% if request.user.is_authenticated %}
+                    <p class="text-end">Привет {{ request.user.username }} (<a href="{% url 'logout' %}">Выйти</a>)</p>
+                {% else %}
+                    <p class="text-end"><a href="{% url 'login' %}?next={{ request.path }}">Войти</a></p>
+                {% endif %}
             </div>
             <div class="col">
                 <p class="text-center text-info">
