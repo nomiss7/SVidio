@@ -93,16 +93,7 @@ class Article(MetaTagMixin):
         on_delete=models.SET_NULL,
         null=True
     )
-    # user.first_name = models.TextField(verbose_name='Имя Автора')
-    # user.last_name = models.TextField(verbose_name='Фамилия Автора')
-    # user.image = ProcessedImageField(
-    #     verbose_name='Изображение',
-    #     upload_to='blog/article/',
-    #     processors=[],
-    #     format='JPEG',
-    #     options={'quality': 100},
-    #     null=True
-    # )
+
     created_at = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name='Дата редактирования', auto_now=True)
 
