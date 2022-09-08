@@ -53,8 +53,7 @@
                 {% if request.user.is_authenticated %}
                     <p class="text-end">Привет {{ request.user.username }} (<a href="{% url 'logout' %}">Выйти</a>)</p>
                 {% else %}
-                    <p class="text-end"><a href="{% url 'login' %}?next=
-                            {% if request.GET.next %}{{ request.GET.next }}{% else %}{{ request.path }}{% endif %}">Войти</a> или <a
+                    <p class="text-end"><a href="{% url 'login' %}?next={% if request.GET.next %}{{ request.GET.next }}{% else %}{{ request.path }}{% endif %}">Войти</a> или <a
                             href="{% url 'register' %}?next={{ request.path }}">Зарегистрироваться</a></p>
                 {% endif %}
             </div>
@@ -86,8 +85,12 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'catalog' %}">Каталог</a>
                         </li>
-                    </ul>
-                </div>
+                        {% if request.user.is_authenticated %}
+                           <li class="nav-item">
+                                <a class="nav-link" href="{% url 'cart_list' %}">Корзина</a>
+                            </li>                    </ul>
+                        {% endif %}
+                 </div>
             </div>
         </nav>
     </div>

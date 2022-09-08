@@ -12,6 +12,12 @@ def get_cart_data(user):
     return {'cart': cart, 'total': total}
 
 
+def cart_list(request):
+    cart = get_cart_data(request.user)
+    total = get_cart_data(request.user)
+    return render(request, 'order/cart_list.html', {'cart': cart, 'total': total})
+
+
 @login_required()
 def add_to_cart(request):
     data = request.GET.copy()

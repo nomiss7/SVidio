@@ -139,5 +139,5 @@ AUTH_USER_MODEL = 'user.User'
 PAGE_NAMES = {
     'home': 'Главная',
     'blog': 'Блог',
-    'catalog': 'Каталог'
+    'catalog': 'Каталог',
 }
