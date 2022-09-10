@@ -4,6 +4,8 @@ from apps.user.forms import LoginForm, RegisterForm
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
+from config.settings import PAGE_NAMES
+
 
 def user_login(request):
     error = None
@@ -23,7 +25,9 @@ def user_login(request):
                 error = 'Неправильные логин или пароль'
     else:
         form = LoginForm()
-    return render(request, 'user/login.html', {'form': form, 'error': error})
+    breadcrumbs = {'current': PAGE_NAMES['login']}
+    return render(request, 'user/login.html', {'form': form, 'error': error,
+                                               'breadcrumbs': breadcrumbs})
 
 
 def user_logout(request):
@@ -44,4 +48,6 @@ def user_register(request):
         error = form.errors
     else:
         form = RegisterForm()
-    return render(request, 'user/register.html', {'form': form, 'error': error})
+    breadcrumbs = {'current': PAGE_NAMES['register']}
+    return render(request, 'user/register.html', {'form': form, 'error': error,
+                                                  'breadcrumbs': breadcrumbs})
