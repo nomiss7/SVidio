@@ -44,7 +44,9 @@ def user_register(request):
             user = form.save(commit=False)
             user.set_password(form.cleaned_data['password'])
             user.save()
-            return render(request, 'user/welcome.html', {'user': user, 'next_page': next_page})
+            breadcrumbs = {'current': PAGE_NAMES['welcome']}
+            return render(request, 'user/welcome.html', {'user': user, 'next_page': next_page,
+                                                         'breadcrumbs': breadcrumbs})
         error = form.errors
     else:
         form = RegisterForm()
