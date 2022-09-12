@@ -1,13 +1,12 @@
+from django.db import transaction
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 
-from apps.order.forms import AddToCartForm, CreateOrderForm
-from apps.order.models import Cart
-from config.settings import PAGE_NAMES
-
 from apps.catalog.models import Product
-from apps.catalog.views import ProductDetailView
+from apps.order.forms import AddToCartForm, CreateOrderForm
+from apps.order.models import Cart, OrderProduct
+from config.settings import PAGE_NAMES
 
 
 def get_cart_data(user):
@@ -16,6 +15,12 @@ def get_cart_data(user):
     for row in cart:
         total += row.product.price * row.quantity
     return {'cart': cart, 'total': total}
+
+
+def check_quantity(quantity, product):
+    if quantity > product.quantity:
+        return product.quantity
+    return quantity
 
 
 @login_required()
@@ -31,8 +36,10 @@ def add_to_cart(request):
         if not csrf or csrf != data.get('csrfmiddlewaretoken'):
             row = Cart.objects.filter(product=cd['product'], user=cd['user']).first()
             if row:
-                Cart.objects.filter(id=row.id).update(quantity=row.quantity + cd['quantity'])
+                quantity = row.quantity + cd['quantity']
+                Cart.objects.filter(id=row.id).update(quantity=check_quantity(quantity, cd['product']))
             else:
+                form.quantity = check_quantity(cd['quantity'], cd['product'])
                 form.save()
             request.session['cart_token'] = data.get('csrfmiddlewaretoken')
         return render(request, 'order/added.html', {'cart': get_cart_data(request.user), 'product': cd['product'],
@@ -41,6 +48,14 @@ def add_to_cart(request):
 
 @login_required
 def cart_list(request):
+    breadcrumbs = {'current': PAGE_NAMES['cart']}
+    return render(request, 'order/cart_list.html', {'cart': get_cart_data(request.user),
+                                                    'breadcrumbs': breadcrumbs})
+
+
+@login_required()
+def delete_from_cart(request, row_id):
+    Cart.objects.filter(id=row_id).delete()
     breadcrumbs = {'current': PAGE_NAMES['cart']}
     return render(request, 'order/cart_list.html', {'cart': get_cart_data(request.user),
                                                     'breadcrumbs': breadcrumbs})
@@ -61,8 +76,18 @@ def create_order(request):
         request.POST = data
         form = CreateOrderForm(request.POST)
         if form.is_valid():
-            form.save()
-            Cart.objects.filter(user=user).delete()
+            with transaction.atomic():
+                order = form.save()
+                for row in cart['cart']:
+                    OrderProduct.objects.create(
+                        order=order,
+                        product=row.product,
+                        quantity=check_quantity(row.quantity, row.product),
+                        price=row.product.price
+                    )
+                    Product.objects.filter(id=row.product.id)\
+                        .update(quantity=row.product.quantity - check_quantity(row.quantity, row.product))
+                Cart.objects.filter(user=user).delete()
             breadcrumbs = {'current': PAGE_NAMES['created_order']}
             return render(request, 'order/created.html', {'breadcrumbs': breadcrumbs})
         error = form.errors
@@ -77,4 +102,3 @@ def create_order(request):
     breadcrumbs.update({'current': PAGE_NAMES['order']})
     return render(request, 'order/create.html', {'cart': cart, 'form': form, 'error': error,
                                                  'breadcrumbs': breadcrumbs})
-
