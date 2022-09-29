@@ -13,7 +13,7 @@ from django.utils.http import urlencode
 class TagAdmin(admin.ModelAdmin):
     list_display = ['id', 'name']
     list_display_links = ['id', 'name']
-    fields = ['id', 'name', 'meta_title', 'meta_description', 'meta_keywords']
+    fields = ['name', 'meta_title', 'meta_description', 'meta_keywords']
 
 
 @admin.register(BlogCategory)
@@ -39,7 +39,8 @@ class BlogCategoryAdmin(admin.ModelAdmin):
 class ArticleAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'image_tag_thumbnail', 'category_link', 'tags_link', 'created_at']
     list_display_links = ['id', 'name', 'image_tag_thumbnail']
-    fields = ['category', 'image_tag', 'image', 'tags', 'title', 'text_preview', 'text', 'user', 'meta_title', 'meta_description', 'meta_keywords']
+    fields = ['category', 'image_tag', 'image', 'tags', 'name', 'text_preview', 'text', 'user', 'meta_title',
+              'meta_description', 'meta_keywords']
     readonly_fields = ['image_tag']
     list_filter = ['category', 'tags']
 
