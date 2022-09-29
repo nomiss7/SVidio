@@ -6,6 +6,7 @@ from mptt.models import MPTTModel, TreeForeignKey
 from pilkit.processors import ResizeToFill
 
 from apps.main.mixins import MetaTagMixin
+from apps.user.models import User
 from config.settings import MEDIA_ROOT
 from django.urls import reverse
 
@@ -112,6 +113,8 @@ class Product(MetaTagMixin):
         related_name='categories',
         blank=True
     )
+    user = models.ForeignKey(User, verbose_name='Владелец', blank=True, null=True, on_delete=models.CASCADE)
+    is_checked = models.BooleanField(verbose_name='Проверен', default=False)
 
     def images(self):
         return Image.objects.filter(product=self.id)

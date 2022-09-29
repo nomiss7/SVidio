@@ -1,12 +1,21 @@
 from rest_framework import generics, permissions, viewsets
 from apps.catalog.models import Product, Category, Image
-from apps.api.catalog.serializers import ProductReadSerializer, ProductWriteSerializer, ImageSerializer, \
+from apps.api.catalog.serializers import ProductReadSerializer, ProductWriteSerializer, ImageSerializer,\
     CategorySerializer
 
 
 class ProductListView(generics.ListAPIView):
     serializer_class = ProductReadSerializer
-    queryset = Product.objects.all()
+
+    def get_queryset(self):
+        queryset = Product.objects.filter(is_checked=True)
+        if self.request.query_params.get('category'):
+            queryset = queryset.filter(categories=self.request.query_params['category'])
+
+        if self.request.query_params.get('name'):
+            queryset = queryset.filter(name__icontains=self.request.query_params['name'])
+
+        return queryset
 
 
 class ProductDetailView(generics.RetrieveAPIView):
@@ -18,6 +27,9 @@ class ProductCreateView(generics.CreateAPIView):
     permission_classes = [permissions.IsAdminUser]
     serializer_class = ProductWriteSerializer
     queryset = Product.objects.all()
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 class ProductUpdateView(generics.UpdateAPIView):
@@ -41,29 +53,3 @@ class ImageViewSet(viewsets.ModelViewSet):
 class CategoryViewSet(viewsets.ModelViewSet):
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
-
-
-class CategoryDetailView(generics.RetrieveAPIView):
-    serializer_class = CategorySerializer
-    queryset = Category.objects.all()
-
-
-class CategoryCreateView(generics.CreateAPIView):
-    permission_classes = [permissions.IsAdminUser]
-    serializer_class = CategorySerializer
-    queryset = Category.objects.all()
-
-
-class CategoryUpdateView(generics.UpdateAPIView):
-    permission_classes = [permissions.IsAdminUser]
-    serializer_class = CategorySerializer
-    queryset = Category.objects.all()
-
-
-class CategoryDeleteView(generics.DestroyAPIView):
-    permission_classes = [permissions.IsAdminUser]
-    serializer_class = CategorySerializer
-    queryset = Category.objects.all()
-
-
-
