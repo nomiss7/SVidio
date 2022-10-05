@@ -12,7 +12,7 @@
     {% if article.image %}
         <img class="img-thumbnail" src="{{ article.image.url }}" alt="">
     {% endif %}
-    <p>{{ article.text }}</p>
+    <p>{{ article.text| safe }}</p>
     <hr>
     {% if article.user %}
         <p>Имя Автора: {{ article.user.first_name }}</p>
