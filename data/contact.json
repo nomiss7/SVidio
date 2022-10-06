@@ -5,6 +5,10 @@
     "fields": {
       "name": "Контакты",
       "slug": "contacts",
+      "meta_title": "Контакты",
+      "meta_description": "Контакты",
+      "meta_keywords": "Контакты",
+      "text": "Номер тел: +380 674 611 311 Адресс: Проспект Бажана 7 Добро пожаловать !",
       "is_active": true
     }
   }
