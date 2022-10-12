@@ -1,6 +1,5 @@
 from django.contrib import admin
-from apps.blog.models import Article, BlogCategory, Tag
-from apps.user.models import User
+from apps.blog.models import Article, BlogCategory, Tag, Comment
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.http import urlencode
@@ -59,5 +58,19 @@ class ArticleAdmin(admin.ModelAdmin):
         return format_html(result)
 
     tags_link.short_description = 'Теги'
+
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name', 'text', 'email', 'created_at', 'article_link', 'is_checked']
+    list_display_links = ['id']
+    fields = ['comment_article', 'name', 'text', 'email', 'is_checked']
+
+    def article_link(self, obj):
+        if obj.comment_article:
+            url = reverse('admin:blog_article_change', args=[obj.comment_article.id])
+            return format_html(f"<a href='{url}'>{obj.comment_article.name}</a>")
+
+    article_link.short_description = 'Статья'
 
 
