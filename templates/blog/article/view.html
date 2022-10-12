@@ -12,16 +12,8 @@
     {% if article.image %}
         <img class="img-thumbnail" src="{{ article.image.url }}" alt="">
     {% endif %}
-    <p>{{ article.text| safe }}</p>
-    <hr>
-    {% if article.user %}
-        <p>Имя Автора: {{ article.user.first_name }}</p>
-        <p>Фамилия Автора: {{ article.user.last_name }}</p>
-    {% endif %}
+    <p>{{ article.text|safe }}</p>
 
-    {% if article.user.image %}
-        <img class="img-thumbnail" src="{{ article.user.image.url }}" alt="">
-    {% endif %}
     <p>
         {% for tag in article.tags.all %}
             <h4>
@@ -34,5 +26,103 @@
         <b>Дата</b>: {{ article.created_at }} <br>
         <b>Категория</b>: {{ category.name }} <br>
     </p>
-{% endblock %}
+    {% if article.user %}
+        <div class="text-end">
+            <div class="author">
+                {% if article.user.image %}
+                    <span class="avatar">
+                        <img src="{{ article.user.image_thumbnail.url }}" alt="">
+                    </span>
+                {% endif %}
+                <span class="author-name">{{ article.user.first_name }} {{ article.user.last_name }}</span>
+            </div>
+        </div>
+    {% endif %}
+    <hr>
+    <h3 class="my-header">Комментарии:</h3>
+    {% load mathfilters %}
+{#    {% for comment in comments %}#}
+{#        <div class="item product">#}
+{#            <p class="text-left ">  {{ comment.name }}</p>#}
+{#            <p class="text-left ">  {{ comment.text }}</p>#}
+{#            <p class="text-left ">  {{ comment.created_at }}</p>#}
+{#        </div>#}
+{#    {% endfor %}#}
+{#    <script>#}
+{#        $('.psp-{{ comment.id }}').owlCarousel({#}
+{#            loop: true,#}
+{#            margin: 10,#}
+{#            nav: true,#}
+{#            responsive: {#}
+{#                0: {#}
+{#                    items: 1#}
+{#                },#}
+{#                600: {#}
+{#                    items: 2#}
+{#                },#}
+{#                1000: {#}
+{#                    items: 3#}
+{#                }#}
+{#            }#}
+{#        })#}
+{#    </script>#}
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Имя автора</th>
+                <th scope="col">Комментарии</th>
+                <th scope="col">Дата создания</th>
+            </tr>
+            </thead>
+            <tbody>
 
+            {% for comment in comments %}
+                {% if comment.is_checked %}
+                    <tr>
+                        <td>{{ comment.name }}</td>
+                        <td>{{ comment.text }}</td>
+                        <td>{{ comment.created_at }}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+
+            </tbody>
+        </table>
+
+    <div class="row">
+        <div class="col-sm-12 col-md-3"></div>
+        <div class="col-sm-12 col-md-6">
+            {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+            {% endif %}
+            <form method="post">
+                {% csrf_token %}
+                {% if request.user.is_authenticated %}
+                    <div class="mb-3">
+                        <label for="last_name" class="form-label">Комментарий</label>
+                        <textarea type="text" class="form-control" name="text" id="text" cols="80" rows="3"></textarea>
+                    </div>
+
+                {% else %}
+                    <div class="mb-3">
+                        <label for="first_name" class="form-label">Имя</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">E-mail</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="last_name" class="form-label">Комментарий</label>
+                        <textarea type="text" class="form-control" name="text" id="text" cols="80" rows="3"></textarea>
+                    </div>
+                {% endif %}
+                <button type="submit" class="btn btn-primary">Опубликовать</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
