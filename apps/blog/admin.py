@@ -66,11 +66,12 @@ class CommentAdmin(admin.ModelAdmin):
     list_display_links = ['id']
     fields = ['comment_article', 'name', 'text', 'email', 'is_checked']
 
+    def has_add_permission(self, request):
+        return False
+
     def article_link(self, obj):
         if obj.comment_article:
             url = reverse('admin:blog_article_change', args=[obj.comment_article.id])
             return format_html(f"<a href='{url}'>{obj.comment_article.name}</a>")
 
     article_link.short_description = 'Статья'
-
-
