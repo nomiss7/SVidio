@@ -25,6 +25,7 @@
     <p>
         <b>Дата</b>: {{ article.created_at }} <br>
         <b>Категория</b>: {{ category.name }} <br>
+        <b>Комментариев</b>: {{ comments.count }} <br>
     </p>
     {% if article.user %}
         <div class="text-end">
@@ -77,13 +78,11 @@
             <tbody>
 
             {% for comment in comments %}
-                {% if comment.is_checked %}
                     <tr>
                         <td>{{ comment.name }}</td>
                         <td>{{ comment.text }}</td>
                         <td>{{ comment.created_at }}</td>
                     </tr>
-                {% endif %}
             {% endfor %}
 
             </tbody>
@@ -101,13 +100,13 @@
                 {% csrf_token %}
                 {% if request.user.is_authenticated %}
                     <div class="mb-3">
-                        <label for="last_name" class="form-label">Комментарий</label>
+                        <label for="text" class="form-label">Комментарий</label>
                         <textarea type="text" class="form-control" name="text" id="text" cols="80" rows="3"></textarea>
                     </div>
 
                 {% else %}
                     <div class="mb-3">
-                        <label for="first_name" class="form-label">Имя</label>
+                        <label for="name" class="form-label">Имя</label>
                         <input type="text" class="form-control" id="name" name="name" required>
                     </div>
 
@@ -117,7 +116,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="last_name" class="form-label">Комментарий</label>
+                        <label for="text" class="form-label">Комментарий</label>
                         <textarea type="text" class="form-control" name="text" id="text" cols="80" rows="3"></textarea>
                     </div>
                 {% endif %}

@@ -24,7 +24,7 @@ def article_list(request, category_id):
 def article_view(request, category_id, article_id):
     article = Article.objects.get(id=article_id)
     category = BlogCategory.objects.get(id=category_id)
-    comments = Comment.objects.filter(comment_article=article.id)
+    comments = Comment.objects.filter(comment_article=article.id, is_checked=True)
     breadcrumbs = {reverse('blog_category_list'): PAGE_NAMES['blog']}
     breadcrumbs.update({reverse('article_list', args=[category.id]): category.name})
     breadcrumbs.update({'current': article.name})
